@@ -14,7 +14,7 @@
 		 * @return void
 		 */
 		public function register() {
-			//
+			$this->app->singleton( 'lilac-facade', fn() => new LilacService );
 		}
 
 		/**

@@ -29,7 +29,10 @@
         "laravel": {
             "providers": [
                 "Hans\\Lilac\\LilacServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "Lilac": "Hans\\Lilac\\Facades\\LilacFacade"
+            }
         }
     },
     "scripts": {
