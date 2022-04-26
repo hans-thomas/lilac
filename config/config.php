@@ -1,7 +1,9 @@
 <?php
 
+	use Illuminate\Database\Eloquent\Model;
+
 	return [
-		'wrappedBy' => \Illuminate\Database\Eloquent\Model::query(),
+		'wrappedBy' => Model::class,
 		'relation'  => 'products',
-		'entity'    => \Illuminate\Database\Eloquent\Model::query(),
+		'entity'    => Model::class,
 	];
