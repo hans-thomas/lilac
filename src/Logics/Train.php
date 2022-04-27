@@ -8,11 +8,12 @@
 		private array $configuration;
 
 		public function __invoke() {
-			$relation = $this->getConfig( 'relation' );
-			$M        = $this->getConfig( 'wrappedBy' )->all();
-			$OD       = [];
-			$CD       = [];
-			$PM       = null;
+			$relation       = $this->getConfig( 'relation' );
+			$wrappedByModel = $this->getConfig( 'wrappedBy' );
+			$M              = ( new $wrappedByModel )->query()->all();
+			$OD             = [];
+			$CD             = [];
+			$PM             = null;
 
 			foreach ( $M as $meal ) {
 
