@@ -10,39 +10,27 @@
 		public function __invoke() {
 			$relation       = $this->getConfig( 'relation' );
 			$wrappedByModel = $this->getConfig( 'wrappedBy' );
-			$M              = ( new $wrappedByModel )->query()->all();
+			$M              = ( new $wrappedByModel )->query()->get();
 			$OD             = [];
 			$CD             = [];
 			$PM             = null;
-
 			foreach ( $M as $meal ) {
-
 				foreach ( $meal->{$relation} as $product ) {
-
 					if ( ! isset( $OD[ $product->id ] ) and ! isset( $CD[ $product->id ] ) ) {
-
 						$OD[ $product->id ] = 0;
 						$CD[ $product->id ] = [];
-
 					}
 					$OD[ $product->id ] = $OD[ $product->id ] + 1;
-
-					foreach ( $meal as $item ) {
-						if ( $item->is( $product ) ) {
-							continue;
-						}
+					foreach ( $meal->{$relation}->except( $product->id ) as $item ) {
 						if ( ! isset( $CD[ $product->id ][ $item->id ] ) ) {
 							$CD[ $product->id ][ $item->id ] = 0;
 						}
 						$CD[ $product->id ][ $item->id ] = $CD[ $product->id ][ $item->id ] + 1;
 					}
-
 				}
-
-				$PM = [ $OD, $CD ];
 			}
 
-			return $PM;
+			return $PM = [ 'OD' => $OD, 'CD' => $CD ];
 		}
 
 		public function getConfig( string $key, $default = null ) {
