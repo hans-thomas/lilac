@@ -1,13 +1,12 @@
 <?php
 
-	namespace Hans\Lilac\Logics;
+	namespace Hans\Lilac\Trainers;
 
+	use Hans\Lilac\Contracts\Trainers\Trainer;
 	use Illuminate\Support\Arr;
 
-	class Train {
-		private array $configuration;
-
-		public function __invoke() {
+	class BasicTrainer extends Trainer {
+		public function __invoke(): array {
 			$relation       = $this->getConfig( 'relation' );
 			$wrappedByModel = $this->getConfig( 'wrappedBy' );
 			$M              = ( new $wrappedByModel )->query()->get();

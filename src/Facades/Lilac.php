@@ -4,7 +4,7 @@
 
     use Illuminate\Support\Facades\Facade;
 
-    class LilacFacade extends Facade {
+    class Lilac extends Facade {
         /**
          * Get the registered name of the component.
          *

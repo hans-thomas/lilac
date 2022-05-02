@@ -2,7 +2,7 @@
 
 	namespace Hans\Lilac;
 
-	use Hans\Lilac\Logics\Train;
+	use Hans\Lilac\Contracts\Trainers\Trainer;
 	use Illuminate\Support\Collection;
 
 	class LilacService {
@@ -12,7 +12,7 @@
 		}
 
 		public function recommendedModels( Collection $models ): array {
-			$pairwiseAssociationRules = ( new Train() )();
+			$pairwiseAssociationRules = app( Trainer::class )->run();
 
 			return $this->recommend( $pairwiseAssociationRules, $models );
 		}

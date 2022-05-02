@@ -31,7 +31,7 @@
                 "Hans\\Lilac\\LilacServiceProvider"
             ],
             "aliases": {
-                "Lilac": "Hans\\Lilac\\Facades\\LilacFacade"
+                "Lilac": "Hans\\Lilac\\Facades\\Lilac"
             }
         }
     },

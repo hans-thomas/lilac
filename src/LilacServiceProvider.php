@@ -4,6 +4,8 @@
 	namespace Hans\Lilac;
 
 
+	use Hans\Lilac\Contracts\Trainers\Trainer;
+	use Hans\Lilac\Trainers\BasicTrainer;
 	use Illuminate\Support\Facades\Route;
 	use Illuminate\Support\ServiceProvider;
 
@@ -15,6 +17,7 @@
 		 */
 		public function register() {
 			$this->app->singleton( 'lilac-facade', fn() => new LilacService );
+			$this->app->bind( Trainer::class, fn() => new BasicTrainer );
 		}
 
 		/**
