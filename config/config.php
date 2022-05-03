@@ -8,4 +8,5 @@
 		'relation'  => 'products',
 		'entity'    => Model::class,
 		'trainer'   => BasicTrainer::class,
+		'expires'   => - 1
 	];
