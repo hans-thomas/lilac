@@ -11,10 +11,13 @@
 
 		}
 
-		public function recommendedModels( Collection $models ): array {
-			$pairwiseAssociationRules = app( Trainer::class )->run();
+		public function recommendedModels( Collection $models, int $limit = null ): array {
+			$pairwiseAssociationRules = app( Trainer::class )->run( $models );
 
-			return $this->recommend( $pairwiseAssociationRules, $models );
+			$recommended = $this->recommend( $pairwiseAssociationRules, $models );
+			arsort( $recommended );
+
+			return $limit ? collect( $recommended )->take( $limit )->toArray() : $recommended;
 		}
 
 		private function recommend( array $PM, Collection $models ): array {
@@ -23,6 +26,7 @@
 			$W  = [];
 			$OD = $PM[ 'OD' ];
 			$CD = $PM[ 'CD' ];
+
 			foreach ( $models as $inf ) {
 				$inf = $inf->id;
 				foreach ( array_diff_key( $CD[ $inf ], $models->pluck( 'id' )->toArray() ) as $item => $count ) {

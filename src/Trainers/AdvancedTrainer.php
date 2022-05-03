@@ -11,19 +11,17 @@
 		private Collection $models;
 
 		public function __invoke() {
+			$this->models   = func_get_arg( 0 )[ 0 ];
 			$relation       = $this->getConfig( 'relation' );
 			$wrappedByModel = $this->getConfig( 'wrappedBy' );
-			if ( isset( $this->models ) ) {
-				$M = ( new $wrappedByModel )->query()
-				                            ->whereHas( $relation,
-					                            fn( Builder $builder ) => $builder->whereIn( Str::singular( $relation ) . '_id',
-						                            $this->models->pluck( 'id' ) ) );
-			} else {
-				$M = ( new $wrappedByModel )->query()->get();
-			}
-			$OD = [];
-			$CD = [];
-			$PM = null;
+			$M              = ( new $wrappedByModel )->query()
+			                                         ->whereHas( $relation,
+				                                         fn( Builder $builder ) => $builder->whereIn( Str::singular( $relation ) . '_id',
+					                                         $this->models->pluck( 'id' ) ) )
+			                                         ->get();
+			$OD             = [];
+			$CD             = [];
+			$PM             = null;
 			foreach ( $M as $meal ) {
 				foreach ( $meal->{$relation} as $product ) {
 					if ( ! isset( $OD[ $product->id ] ) and ! isset( $CD[ $product->id ] ) ) {
@@ -41,14 +39,6 @@
 			}
 
 			return $PM = [ 'OD' => $OD, 'CD' => $CD ];
-		}
-
-		public function run() {
-			if ( func_num_args() ) {
-				$this->models = func_get_arg( 0 );
-			}
-
-			return parent::run();
 		}
 
 	}

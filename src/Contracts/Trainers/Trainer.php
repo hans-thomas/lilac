@@ -8,10 +8,10 @@
 		abstract public function __invoke();
 
 		public function run() {
-			return $this();
+			return $this(func_get_args());
 		}
 
-		public function getConfig( string $key, $default = null ) {
+		protected function getConfig( string $key, $default = null ) {
 			return Arr::get( config( 'lilac' ), $key, $default );
 		}
 	}
