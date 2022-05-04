@@ -8,7 +8,7 @@
 	trait LilacTrait {
 		use HasBelongsToManyEvents;
 
-		public function boot() {
+		public static function booted() {
 			static::belongsToManySynced( function( $relation, $parent, $ids ) {
 				UpdateChachedRecommendedModelsJob::dispatch($relation, $parent);
 			} );
