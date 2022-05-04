@@ -9,8 +9,21 @@
 		use HasBelongsToManyEvents;
 
 		public static function booted() {
-			static::belongsToManySynced( function( $relation, $parent, $ids ) {
-				UpdateChachedRecommendedModelsJob::dispatch($relation, $parent);
+			static::belongsToManyAttached( function( $relation, $parent, $ids ) {
+				UpdateChachedRecommendedModelsJob::dispatch( $relation, $parent );
 			} );
+
+			static::belongsToManyDetached( function( $relation, $parent, $ids ) {
+				UpdateChachedRecommendedModelsJob::dispatch( $relation, $parent );
+			} );
+
+			static::belongsToManyToggled( function( $relation, $parent, $ids ) {
+				UpdateChachedRecommendedModelsJob::dispatch( $relation, $parent );
+			} );
+
+			static::belongsToManySynced( function( $relation, $parent, $ids ) {
+				UpdateChachedRecommendedModelsJob::dispatch( $relation, $parent );
+			} );
+
 		}
 	}
