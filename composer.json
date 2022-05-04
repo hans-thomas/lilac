@@ -9,7 +9,8 @@
         }
     ],
     "require": {
-        "php": "^8.0"
+        "php": "^8.0",
+        "chelout/laravel-relationship-events": "^1.5"
     },
     "require-dev": {
         "orchestra/testbench": "^7.0",
