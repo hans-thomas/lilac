@@ -35,14 +35,13 @@
 		 * @return void
 		 */
 		public function handle() {
+			if ( app()->runningInConsole() ) {
+				return;
+			}
 			if ( $this->relation == $this->getConfig( 'relatedWrappedByRelation' ) ) {
-				app( LilacService::class )->trainer( collect( $this->parent ), fresh: true );
+				app( LilacService::class )->trainer( collect( [ $this->parent ] ), fresh: true );
 			} else if ( $this->relation == $this->getConfig( 'relatedEntityRelation' ) ) {
-				$entity = $this->getConfig( 'entity' );
-				$models = ( new $entity )->query()->whereIn( 'id', $this->ids )->get();
-				foreach ( $models as $model ) {
-					app( LilacService::class )->trainer( collect( $model ), fresh: true );
-				}
+				app( LilacService::class )->trainer( $this->parent->{$this->relation}, fresh: true );
 			}
 		}
 
