@@ -3,20 +3,25 @@
 	namespace Hans\Lilac;
 
 	use Hans\Lilac\Contracts\Trainers\Trainer;
-	use Illuminate\Support\Arr;
 	use Illuminate\Support\Collection;
 	use Illuminate\Support\Facades\Cache;
 
 	class LilacService {
 
-		public function recommendedModels( Collection $models, int $limit = null ): array {
-			$pairwiseAssociationRules = Cache::remember( 'lilac-rules-' . $models->implode( 'id', ',' ),
-				$this->getConfig( 'expires' ), fn() => app( Trainer::class )->run( $models ) );
+		public function recommendedModels( Collection $models, int $limit = null, Trainer $trainer = null ): array {
+			$pairwiseAssociationRules = $this->trainer( $models, $trainer );
 
 			$recommended = $this->recommend( $pairwiseAssociationRules, $models );
 			arsort( $recommended );
 
 			return $limit ? collect( $recommended )->take( $limit )->toArray() : $recommended;
+		}
+
+		private function trainer( Collection $models, Trainer $trainer = null ): array {
+			$trainer  = $trainer ? $trainer : app( Trainer::class );
+			$cacheKey = 'lilac-rules_' . $models->implode( 'id', ',' ) . '_' . strtolower( class_basename( $trainer ) );
+
+			return Cache::remember( $cacheKey, config( 'lilac.expires' ), fn() => $trainer->run( $models ) );
 		}
 
 		private function recommend( array $PM, Collection $models ): array {
@@ -43,9 +48,5 @@
 			}
 
 			return $RF;
-		}
-
-		private function getConfig( string $key, $default = null ) {
-			return Arr::get( config( 'lilac' ), $key, $default );
 		}
 	}
