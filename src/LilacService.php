@@ -18,7 +18,7 @@
 		}
 
 		private function trainer( Collection $models, Trainer $trainer = null ): array {
-			$trainer  = $trainer ? $trainer : app( Trainer::class );
+			$trainer  = $trainer ? : app( Trainer::class );
 			$cacheKey = 'lilac-rules_' . $models->implode( 'id', ',' ) . '_' . strtolower( class_basename( $trainer ) );
 
 			return Cache::remember( $cacheKey, config( 'lilac.expires' ), fn() => $trainer->run( $models ) );
