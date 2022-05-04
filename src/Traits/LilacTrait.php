@@ -5,7 +5,7 @@
 	use Chelout\RelationshipEvents\Concerns\HasBelongsToManyEvents;
 	use Hans\Lilac\Jobs\UpdateChachedRecommendedModelsJob;
 
-	class LilacTrait {
+	trait LilacTrait {
 		use HasBelongsToManyEvents;
 
 		public function boot() {
