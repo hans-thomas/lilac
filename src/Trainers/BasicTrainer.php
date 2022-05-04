@@ -7,7 +7,7 @@
 
 	class BasicTrainer extends Trainer {
 		public function __invoke(): array {
-			$relation       = $this->getConfig( 'relation' );
+			$relation       = $this->getConfig( 'relatedEntityRelation' );
 			$wrappedByModel = $this->getConfig( 'wrappedBy' );
 			$M              = ( new $wrappedByModel )->query()->get();
 			$OD             = [];

@@ -12,7 +12,7 @@
 
 		public function __invoke() {
 			$this->models   = func_get_arg( 0 )[ 0 ];
-			$relation       = $this->getConfig( 'relation' );
+			$relation       = $this->getConfig( 'relatedEntityRelation' );
 			$wrappedByModel = $this->getConfig( 'wrappedBy' );
 			$M              = ( new $wrappedByModel )->query()
 			                                         ->whereHas( $relation,

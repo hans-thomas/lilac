@@ -1,12 +1,10 @@
 <?php
 
-	use Hans\Lilac\Trainers\BasicTrainer;
-	use Illuminate\Database\Eloquent\Model;
-
 	return [
-		'wrappedBy' => Model::class,
-		'relation'  => 'products',
-		'entity'    => Model::class,
-		'trainer'   => BasicTrainer::class,
-		'expires'   => - 1
+		'wrappedBy'                => \Illuminate\Database\Eloquent\Model::class,
+		'relatedEntityRelation'    => 'foods',
+		'entity'                   => \Illuminate\Database\Eloquent\Model::class,
+		'relatedWrappedByRelation' => 'meals',
+		'trainer'                  => \Hans\Lilac\Trainers\AdvancedTrainer::class,
+		'expires'                  => 10
 	];

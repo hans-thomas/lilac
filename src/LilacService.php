@@ -17,9 +17,12 @@
 			return $limit ? collect( $recommended )->take( $limit )->toArray() : $recommended;
 		}
 
-		private function trainer( Collection $models, Trainer $trainer = null ): array {
+		public function trainer( Collection $models, Trainer $trainer = null, bool $fresh = false ): array {
 			$trainer  = $trainer ? : app( Trainer::class );
 			$cacheKey = 'lilac-rules_' . $models->implode( 'id', ',' ) . '_' . strtolower( class_basename( $trainer ) );
+			if ( $fresh ) {
+				Cache::forget( $cacheKey );
+			}
 
 			return Cache::remember( $cacheKey, config( 'lilac.expires' ), fn() => $trainer->run( $models ) );
 		}
