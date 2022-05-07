@@ -3,18 +3,20 @@
 	namespace Hans\Lilac;
 
 	use Hans\Lilac\Contracts\Trainers\Trainer;
+	use Illuminate\Support\Arr;
 	use Illuminate\Support\Collection;
 	use Illuminate\Support\Facades\Cache;
 
 	class LilacService {
 
-		public function recommendedModels( Collection $models, int $limit = null, Trainer $trainer = null ): array {
+		public function recommendedModels( Collection $models, int $limit = null, Trainer $trainer = null ): Collection {
 			$pairwiseAssociationRules = $this->trainer( $models, $trainer );
 
 			$recommended = $this->recommend( $pairwiseAssociationRules, $models );
 			arsort( $recommended );
+			$recommended = $limit ? collect( $recommended )->take( $limit )->toArray() : $recommended;
 
-			return $limit ? collect( $recommended )->take( $limit )->toArray() : $recommended;
+			return $this->resolveModels( $recommended );
 		}
 
 		public function trainer( Collection $models, Trainer $trainer = null, bool $fresh = false ): array {
@@ -24,7 +26,7 @@
 				Cache::forget( $cacheKey );
 			}
 
-			return Cache::remember( $cacheKey, config( 'lilac.expires' ), fn() => $trainer->run( $models ) );
+			return Cache::remember( $cacheKey, $this->getConfig( 'expires' ), fn() => $trainer->run( $models ) );
 		}
 
 		private function recommend( array $PM, Collection $models ): array {
@@ -52,4 +54,17 @@
 
 			return $RF;
 		}
+
+		public function resolveModels( array $recommendedModels ): Collection {
+			$entity = $this->getConfig( 'entity' );
+
+			$models = ( new $entity )->query()->whereIn( 'id', array_keys( $recommendedModels ) )->get();
+
+			return $models->sortByDesc( fn( $entity ) => $recommendedModels[ $entity->id ] );
+		}
+
+		protected function getConfig( string $key, $default = null ) {
+			return Arr::get( config( 'lilac' ), $key, $default );
+		}
+
 	}
