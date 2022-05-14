@@ -35,9 +35,6 @@
 		 * @return void
 		 */
 		public function handle() {
-			if ( app()->runningInConsole() ) {
-				return;
-			}
 			if ( $this->relation == $this->getConfig( 'relatedWrappedByRelation' ) ) {
 				app( LilacService::class )->trainer( collect( [ $this->parent ] ), fresh: true );
 			} else if ( $this->relation == $this->getConfig( 'relatedEntityRelation' ) ) {

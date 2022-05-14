@@ -11,7 +11,7 @@
 	class LilacService {
 
 		public function recommendedModels( Collection|Model $models, int $limit = null, Trainer $trainer = null ): Collection {
-			$models = $models instanceof Model ? collect( Arr::wrap( $models ) ) : $models;
+			$models                   = $models instanceof Model ? collect( Arr::wrap( $models ) ) : $models;
 			$pairwiseAssociationRules = $this->trainer( $models, $trainer );
 
 			$recommended = $this->recommend( $pairwiseAssociationRules, $models );
@@ -28,7 +28,7 @@
 				Cache::forget( $cacheKey );
 			}
 
-			return Cache::remember( $cacheKey, $this->getConfig( 'expires' ), fn() => $trainer->run( $models ) );
+			return Cache::rememberForever( $cacheKey, fn() => $trainer->run( $models ) );
 		}
 
 		private function recommend( array $PM, Collection $models ): array {

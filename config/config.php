@@ -6,5 +6,4 @@
 		'entity'                   => \Illuminate\Database\Eloquent\Model::class,
 		'relatedWrappedByRelation' => 'meals',
 		'trainer'                  => \Hans\Lilac\Trainers\AdvancedTrainer::class,
-		'expires'                  => 10
 	];
