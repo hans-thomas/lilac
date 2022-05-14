@@ -11,7 +11,7 @@
 	class LilacService {
 
 		public function recommendedModels( Collection|Model $models, int $limit = null, Trainer $trainer = null ): Collection {
-			$models                   = $models instanceof Model ? collect( $models ) : $models;
+			$models = $models instanceof Model ? collect( Arr::wrap( $models ) ) : $models;
 			$pairwiseAssociationRules = $this->trainer( $models, $trainer );
 
 			$recommended = $this->recommend( $pairwiseAssociationRules, $models );
