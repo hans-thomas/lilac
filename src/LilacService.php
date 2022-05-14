@@ -3,13 +3,15 @@
 	namespace Hans\Lilac;
 
 	use Hans\Lilac\Contracts\Trainers\Trainer;
+	use Illuminate\Database\Eloquent\Model;
 	use Illuminate\Support\Arr;
 	use Illuminate\Support\Collection;
 	use Illuminate\Support\Facades\Cache;
 
 	class LilacService {
 
-		public function recommendedModels( Collection $models, int $limit = null, Trainer $trainer = null ): Collection {
+		public function recommendedModels( Collection|Model $models, int $limit = null, Trainer $trainer = null ): Collection {
+			$models                   = $models instanceof Model ? collect( $models ) : $models;
 			$pairwiseAssociationRules = $this->trainer( $models, $trainer );
 
 			$recommended = $this->recommend( $pairwiseAssociationRules, $models );
