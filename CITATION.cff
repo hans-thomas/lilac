@@ -5,16 +5,16 @@ cff-version: 1.2.0
 title: liliac
 message: EPAR (Enhanced Pairwise Association Rules) implementation
 type: software
+date-released: 2022-04-03
 authors:
   - given-names: Mohammad
     family-names: Mortazavi
     email: s.mohammad027@live.com
-    name-particle: Mohammad
     affiliation: >-
       Ahrar Institute of Technology and Higher Education
       Department of Computer
 url: >-
-  https://www.sciencedirect.com/science/article/pii/S095741741830441X
+  https://github.com/hans-thomas/lilac
 abstract: >-
   Recommender systems such as text-based and collaborative
   filtering methods always rely heavily on descriptive
