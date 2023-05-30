@@ -1,0 +1,51 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: liliac
+message: EPAR (Enhanced Pairwise Association Rules) implementation
+type: software
+date-released: 2022-04-03
+authors:
+  - given-names: Mohammad
+    family-names: Mortazavi
+    email: s.mohammad027@live.com
+    affiliation: >-
+      Ahrar Institute of Technology and Higher Education
+      Department of Computer
+url: >-
+  https://github.com/hans-thomas/lilac
+abstract: >-
+  Recommender systems such as text-based and collaborative
+  filtering methods always rely heavily on descriptive
+  product information and user profile history. These
+  methods face several problems, including the cold start
+  problem in systems with unusual uses. Another problem of
+  these methods is that they have (include) issues related
+  to the privacy of users being at risk. In this study, we
+  introduce an algorithm that works completely independently
+  of users’ personal information and does not require
+  complex evaluation systems for products.
+
+  The main goal of the pairwise association rules algorithm
+  is to make recommender systems independent so they no
+  longer depend on profile information and understanding
+  users’ behavior. This ensures privacy for users and helps
+  solve problems such as cold starts, widening the scope of
+  application for recommendation systems.
+
+  In this study, we will review several well-known
+  recommender systems and use two datasets with different
+  sizes for testing to analyze and evaluate the results of
+  the proposed method. Finally, by optimizing the pairwise
+  association rules algorithm and using caching and
+  asynchronous execution functionalities, we will try to
+  improve the execution time of the algorithm and manage
+  resources better.
+keywords:
+  - Recommender System
+  - Cold Start Problem
+  - Cache System
+  - Asynchronous Programming
+  - Association Rules
+license: MIT
