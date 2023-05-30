@@ -1,6 +1,6 @@
 <?php
 
-	namespace Hans\Lilac;
+	namespace Hans\Lilac\Services;
 
 	use Hans\Lilac\Contracts\Trainers\Trainer;
 	use Illuminate\Database\Eloquent\Model;

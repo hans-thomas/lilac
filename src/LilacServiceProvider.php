@@ -5,7 +5,7 @@
 
 
 	use Hans\Lilac\Contracts\Trainers\Trainer;
-	use Illuminate\Support\Facades\Route;
+	use Hans\Lilac\Services\LilacService;
 	use Illuminate\Support\ServiceProvider;
 
 	class LilacServiceProvider extends ServiceProvider {
@@ -15,8 +15,8 @@
 		 * @return void
 		 */
 		public function register() {
-			$this->app->singleton( 'lilac-facade', fn() => new LilacService );
-			$this->app->bind( Trainer::class, fn() => app( config( 'lilac.trainer' ) ) );
+			$this->app->singleton( 'lilac-service', LilacService::class );
+			$this->app->bind( Trainer::class, fn() => app( liliac_config( 'trainer' ) ) );
 		}
 
 		/**
@@ -25,22 +25,13 @@
 		 * @return void
 		 */
 		public function boot() {
-			$this->publishes( [
-				__DIR__ . '/../config/config.php' => config_path( 'lilac.php' )
-			], 'lilac-config' );
-			$this->loadMigrationsFrom( __DIR__ . '/../database/migrations' );
 			$this->mergeConfigFrom( __DIR__ . '/../config/config.php', 'lilac' );
 
-			$this->registerRoutes();
-		}
-
-		/**
-		 * Define routes setup.
-		 *
-		 * @return void
-		 */
-		protected function registerRoutes() {
-			Route::prefix( 'lilac' )->middleware( 'api' )->group( __DIR__ . '/../routes/api.php' );
+			if ( $this->app->runningInConsole() ) {
+				$this->publishes( [
+					__DIR__ . '/../config/config.php' => config_path( 'lilac.php' )
+				], 'lilac-config' );
+			}
 		}
 
 	}
