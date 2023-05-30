@@ -1,7 +1,7 @@
 <?php
 
-	if ( ! function_exists( 'liliac_config' ) ) {
-		function liliac_config( string $key, $default = null ): mixed {
-			return config( "liliac.$key", $default );
+	if ( ! function_exists( 'lilac_config' ) ) {
+		function lilac_config( string $key, $default = null ): mixed {
+			return config( "lilac.$key", $default );
 		}
 	}
