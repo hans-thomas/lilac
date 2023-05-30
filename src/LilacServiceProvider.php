@@ -16,7 +16,7 @@
 		 */
 		public function register() {
 			$this->app->singleton( 'lilac-service', LilacService::class );
-			$this->app->bind( Trainer::class, fn() => app( liliac_config( 'trainer' ) ) );
+			$this->app->bind( Trainer::class, fn() => app( lilac_config( 'trainer' ) ) );
 		}
 
 		/**

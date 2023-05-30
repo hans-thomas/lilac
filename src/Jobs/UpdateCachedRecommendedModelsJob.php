@@ -2,14 +2,14 @@
 
 	namespace Hans\Lilac\Jobs;
 
-	use Hans\Lilac\LilacService;
+	use Hans\Lilac\Facades\Lilac;
+	use Hans\Lilac\Services\LilacService;
 	use Illuminate\Bus\Queueable;
 	use Illuminate\Contracts\Queue\ShouldQueue;
 	use Illuminate\Database\Eloquent\Model;
 	use Illuminate\Foundation\Bus\Dispatchable;
 	use Illuminate\Queue\InteractsWithQueue;
 	use Illuminate\Queue\SerializesModels;
-	use Illuminate\Support\Arr;
 
 	class UpdateCachedRecommendedModelsJob implements ShouldQueue {
 		use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -35,14 +35,11 @@
 		 * @return void
 		 */
 		public function handle() {
-			if ( $this->relation == $this->getConfig( 'relatedWrappedByRelation' ) ) {
-				app( LilacService::class )->trainer( collect( [ $this->parent ] ), fresh: true );
-			} else if ( $this->relation == $this->getConfig( 'relatedEntityRelation' ) ) {
-				app( LilacService::class )->trainer( $this->parent->{$this->relation}, fresh: true );
+			if ( $this->relation == liliac_config( 'relatedWrappedByRelation' ) ) {
+				Lilac::trainer( collect( [ $this->parent ] ), fresh: true );
+			} else if ( $this->relation == liliac_config( 'relatedEntityRelation' ) ) {
+				Lilac::trainer( $this->parent->{$this->relation}, fresh: true );
 			}
 		}
 
-		protected function getConfig( string $key, $default = null ) {
-			return Arr::get( config( 'lilac' ), $key, $default );
-		}
 	}
