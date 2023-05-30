@@ -1,2 +1,3 @@
 # lilac
-it's a recommender system based-on pairwise association rules
+
+it's a recommender system based-on pairwise association rules.
