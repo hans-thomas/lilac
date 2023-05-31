@@ -3,35 +3,20 @@
 	namespace Hans\Lilac\Tests;
 
 	use Hans\Lilac\LilacServiceProvider;
-	use Illuminate\Contracts\Filesystem\Filesystem;
 	use Illuminate\Foundation\Application;
 	use Illuminate\Foundation\Testing\RefreshDatabase;
 	use Illuminate\Routing\Router;
-	use Illuminate\Support\Arr;
-	use Illuminate\Support\Facades\Storage;
 	use Orchestra\Testbench\TestCase as BaseTestCase;
 
 	class TestCase extends BaseTestCase {
 		use RefreshDatabase;
 
-		public Filesystem $storage;
-		private array $config;
-
-		public function getConfig( string $key, $default ) {
-			return Arr::get( $this->config, $key, $default );
-		}
-
 		/**
 		 * Setup the test environment.
 		 */
 		protected function setUp(): void {
-			// Code before application created.
-
 			parent::setUp();
-
-			// Code after application created.
-			$this->config  = config( 'starter' );
-			$this->storage = Storage::disk( 'public' );
+			$this->loadMigrationsFrom( __DIR__ . '/Core/migrations' );
 		}
 
 		/**
@@ -54,7 +39,7 @@
 		 */
 		protected function getPackageProviders( $app ) {
 			return [
-				StarterServiceProvider::class
+				LilacServiceProvider::class
 			];
 		}
 
