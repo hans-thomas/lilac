@@ -9,11 +9,9 @@
 	use Hans\Lilac\Tests\TestCase;
 	use Hans\Lilac\Trainers\EPAR;
 	use Hans\Lilac\Trainers\PAR;
-	use Illuminate\Cache\CacheManager;
 	use Illuminate\Support\Collection;
 	use Illuminate\Support\Facades\Cache;
 	use Mockery;
-	use Mockery\MockInterface;
 
 	class LilacServiceTest extends TestCase {
 		protected function setUp(): void {
@@ -58,8 +56,38 @@
 		 * @return void
 		 */
 		public function fresh(): void {
+			$partialCacheMock = Mockery::mock( Cache::driver() )->makePartial();
+			$partialCacheMock->shouldReceive( 'forget' )->once();
+			Cache::swap( $partialCacheMock );
+
 			$ids = Post::query()->inRandomOrder()->limit( 5 )->get();
 			Lilac::fresh()->recommends( $ids );
+		}
+
+		/**
+		 * @test
+		 *
+		 * @return void
+		 */
+		public function cache(): void {
+			$partialCacheMock = Mockery::mock( Cache::driver() )->makePartial();
+			$partialCacheMock->shouldNotReceive( 'forget' );
+			Cache::swap( $partialCacheMock );
+
+			$ids = Post::query()->inRandomOrder()->limit( 5 )->get();
+			Lilac::recommends( $ids );
+		}
+
+		/**
+		 * @test
+		 *
+		 * @return void
+		 */
+		public function limit(): void {
+			$ids         = Post::query()->inRandomOrder()->limit( 5 )->get();
+			$recommended = Lilac::limit( 10 )->recommends( $ids );
+
+			self::assertCount( 10, $recommended );
 		}
 
 	}

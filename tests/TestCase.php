@@ -3,9 +3,12 @@
 	namespace Hans\Lilac\Tests;
 
 	use Hans\Lilac\LilacServiceProvider;
+	use Hans\Lilac\Tests\Core\Models\Category;
+	use Hans\Lilac\Tests\Core\Models\Post;
 	use Illuminate\Foundation\Application;
 	use Illuminate\Foundation\Testing\RefreshDatabase;
 	use Illuminate\Routing\Router;
+	use Illuminate\Support\Facades\Config;
 	use Orchestra\Testbench\TestCase as BaseTestCase;
 
 	class TestCase extends BaseTestCase {
@@ -17,6 +20,13 @@
 		protected function setUp(): void {
 			parent::setUp();
 			$this->loadMigrationsFrom( __DIR__ . '/Core/migrations' );
+			Config::set( 'lilac.relations', [
+				Post::class => [
+					'wrappedByModel'                 => Category::class,
+					'wrappedByModelRelationToEntity' => 'posts',
+					'entityModelRelationToWrappedBy' => 'categories',
+				]
+			] );
 		}
 
 		/**
