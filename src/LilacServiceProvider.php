@@ -4,7 +4,7 @@
 	namespace Hans\Lilac;
 
 
-	use Hans\Lilac\Contracts\Trainers\Trainer;
+	use Hans\Lilac\Contracts\Trainer;
 	use Hans\Lilac\Services\LilacService;
 	use Illuminate\Support\ServiceProvider;
 
@@ -15,8 +15,8 @@
 		 * @return void
 		 */
 		public function register() {
-			$this->app->singleton( 'lilac-service', LilacService::class );
-			$this->app->bind( Trainer::class, fn() => app( lilac_config( 'trainer' ) ) );
+			$this->app->bind( 'lilac-service', LilacService::class );
+
 		}
 
 		/**

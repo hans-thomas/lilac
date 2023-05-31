@@ -2,7 +2,7 @@
 
 	namespace Hans\Lilac\Facades;
 
-	use Hans\Lilac\Contracts\Trainers\Trainer;
+	use Hans\Lilac\Contracts\Trainer;
 	use Hans\Lilac\Services\LilacService;
 	use Illuminate\Database\Eloquent\Model;
 	use Illuminate\Support\Collection;
@@ -10,8 +10,11 @@
 	use RuntimeException;
 
 	/**
-	 * @method static recommendedModels( Collection|Model $models, int $limit = null, Trainer $trainer = null )
-	 * @method static trainer( Collection $models, Trainer $trainer = null, bool $fresh = false )
+	 * @method static recommends( Collection|Model $models )
+	 * @method static fresh()
+	 * @method static cache()
+	 * @method static trainer( Trainer $trainer )
+	 * @method static limit( int $limit )
 	 * @see LilacService
 	 */
 	class Lilac extends Facade {

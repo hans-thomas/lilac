@@ -2,71 +2,99 @@
 
 	namespace Hans\Lilac\Services;
 
-	use Hans\Lilac\Contracts\Trainers\Trainer;
+	use Hans\Lilac\Contracts\Trainer;
 	use Illuminate\Database\Eloquent\Model;
-	use Illuminate\Support\Arr;
 	use Illuminate\Support\Collection;
 	use Illuminate\Support\Facades\Cache;
 
 	class LilacService {
 
-		public function recommendedModels( Collection|Model $models, int $limit = null, Trainer $trainer = null ): Collection {
-			$models                   = $models instanceof Model ? collect( Arr::wrap( $models ) ) : $models;
-			$pairwiseAssociationRules = $this->trainer( $models, $trainer );
+		protected bool $fresh = false;
+		protected Trainer $trainer;
+		protected int $limit = 0;
+
+		public function recommends( Collection|Model $models ): Collection {
+			$models                   = $models instanceof Model ? collect( [ $models ] ) : $models;
+			$pairwiseAssociationRules = $this->train( $models );
 
 			$recommended = $this->recommend( $pairwiseAssociationRules, $models );
 			arsort( $recommended );
-			$recommended = $limit ? collect( $recommended )->take( $limit )->toArray() : $recommended;
+			$recommended = $this->limit ? collect( $recommended )->take( $this->limit )->toArray() : $recommended;
 
 			return $this->resolveModels( $recommended );
 		}
 
-		public function trainer( Collection $models, Trainer $trainer = null, bool $fresh = false ): array {
-			$trainer  = $trainer ? : app( Trainer::class );
-			$cacheKey = 'lilac-rules_' . $models->implode( 'id', ',' ) . '_' . strtolower( class_basename( $trainer ) );
-			if ( $fresh ) {
+		private function train( Collection $models ): array {
+			$cacheKey = $this->makeCacheKey( $models );
+
+			if ( $this->fresh ) {
 				Cache::forget( $cacheKey );
 			}
 
-			return Cache::rememberForever( $cacheKey, fn() => $trainer->run( $models ) );
+			if ( ! isset( $this->trainer ) ) {
+				$this->trainer = app( lilac_config( 'trainers.default' ), [ 'input_foods' => $models ] );
+			}
+
+			return Cache::rememberForever( $cacheKey, fn() => $this->trainer->run() );
 		}
 
 		private function recommend( array $PM, Collection $models ): array {
-			$RF = [];
-			$P  = [];
-			$W  = [];
-			$OD = $PM[ 'OD' ];
-			$CD = $PM[ 'CD' ];
-
-			foreach ( $models as $inf ) {
-				$inf = $inf->id;
-				foreach ( array_diff_key( $CD[ $inf ], $models->pluck( 'id' )->toArray() ) as $item => $count ) {
-					if ( ! isset( $P[ $item ] ) and ! isset( $W[ $item ] ) ) {
-						$P[ $item ] = 0;
-						$W[ $item ] = 0;
-					}
-					$p          = $CD[ $inf ][ $item ] / $OD[ $inf ];
-					$P[ $item ] = $P[ $item ] + $p;
-					$W[ $item ] = $W[ $item ] + $OD[ $inf ];
-				}
-			}
-			foreach ( $P as $item => $count ) {
-				$RF[ $item ] = $count * $W[ $item ];
-			}
-
-			return $RF;
+			return ( new PairwiseAssociationRulesRecommender( $PM, $models ) )();
 		}
 
-		public function resolveModels( array $recommendedModels ): Collection {
-			$entity = $this->getConfig( 'entity' );
+		private function resolveModels( array $recommendedModels ): Collection {
+			$entity = lilac_config( 'entity' );
 
 			$models = ( new $entity )->query()->whereIn( 'id', array_keys( $recommendedModels ) )->get();
 
 			return $models->sortByDesc( fn( $entity ) => $recommendedModels[ $entity->id ] );
 		}
 
-		protected function getConfig( string $key, $default = null ) {
-			return Arr::get( config( 'lilac' ), $key, $default );
+		private function makeCacheKey( Collection $models ): string {
+			return 'lilac-rules_' .
+			       $models->implode( 'id', ',' ) . '_' .
+			       strtolower( class_basename( $this->trainer ) );
 		}
+
+		/**
+		 * @return self
+		 */
+		public function fresh(): self {
+			$this->fresh = true;
+
+			return $this;
+		}
+
+		/**
+		 * @return self
+		 */
+		public function cache(): self {
+			$this->fresh = false;
+
+			return $this;
+		}
+
+		/**
+		 * @param Trainer $trainer
+		 *
+		 * @return self
+		 */
+		public function trainer( Trainer $trainer ): self {
+			$this->trainer = $trainer;
+
+			return $this;
+		}
+
+		/**
+		 * @param int $limit
+		 *
+		 * @return self
+		 */
+		public function limit( int $limit ): self {
+			$this->limit = $limit;
+
+			return $this;
+		}
+
 
 	}

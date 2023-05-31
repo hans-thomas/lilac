@@ -1,6 +1,6 @@
 <?php
 
-	namespace Hans\Lilac\Contracts\Trainers;
+	namespace Hans\Lilac\Contracts;
 
 	interface Trainer {
 		public function run(): array;

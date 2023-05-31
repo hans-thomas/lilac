@@ -1,6 +1,6 @@
 <?php
 
-	use Hans\Lilac\Trainers\AdvancedTrainer;
+	use Hans\Lilac\Trainers\EPAR;
 
 	return [
 		'wrappedBy'                => \Illuminate\Database\Eloquent\Model::class,
@@ -14,10 +14,10 @@
 		|--------------------------------------------------------------------------
 		|
 		| To set your default trainer, you can set you custom implementation or
-		| choose one of available trainers: BasicTrainer, AdvancedTrainer
+		| choose one of available trainers: PAR, EPAR
 		|
 		*/
 		'trainers'                 => [
-			'default' => AdvancedTrainer::class
+			'default' => EPAR::class
 		],
 	];

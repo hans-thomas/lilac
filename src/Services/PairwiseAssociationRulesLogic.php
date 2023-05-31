@@ -2,17 +2,23 @@
 
 	namespace Hans\Lilac\Services;
 
+	use Hans\Lilac\Contracts\Algorithm;
 	use Illuminate\Support\Collection;
 
-	class PairwiseAssociationRulesLogic {
+	class PairwiseAssociationRulesLogic implements Algorithm {
 
-		public static function train( Collection|array $M ): array {
+		public function __construct(
+			private readonly Collection|array $M
+		) {
+		}
+
+		public function __invoke(): array {
 			$relation = lilac_config( 'relatedEntityRelation' );
 
 			$OD = [];
 			$CD = [];
 			$PM = [];
-			foreach ( $M as $meal ) {
+			foreach ( $this->M as $meal ) {
 				foreach ( $meal->{$relation} as $product ) {
 					if ( ! isset( $OD[ $product->id ] ) and ! isset( $CD[ $product->id ] ) ) {
 						$OD[ $product->id ] = 0;

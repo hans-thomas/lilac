@@ -2,16 +2,16 @@
 
 	namespace Hans\Lilac\Trainers;
 
-	use Hans\Lilac\Contracts\Trainers\Trainer;
+	use Hans\Lilac\Contracts\Trainer;
 	use Hans\Lilac\Services\PairwiseAssociationRulesLogic;
 	use Illuminate\Database\Eloquent\Builder;
 	use Illuminate\Support\Collection;
 	use Illuminate\Support\Str;
 
-	class AdvancedTrainer implements Trainer {
+	class EPAR implements Trainer {
 
 		public function __construct(
-			private readonly Collection $models
+			private readonly Collection $input_foods
 		) {
 		}
 
@@ -23,12 +23,12 @@
 				                                         $relation,
 				                                         fn( Builder $builder ) => $builder->whereIn(
 					                                         Str::singular( $relation ) . '_id',
-					                                         $this->models->pluck( 'id' )
+					                                         $this->input_foods->pluck( 'id' )
 				                                         )
 			                                         )
 			                                         ->get();
 
-			return PairwiseAssociationRulesLogic::train( $M );
+			return ( new PairwiseAssociationRulesLogic( $M ) )();
 		}
 
 	}
