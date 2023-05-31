@@ -8,24 +8,23 @@
 	class PairwiseAssociationRulesLogic implements Algorithm {
 
 		public function __construct(
-			private readonly Collection|array $M
+			private readonly Collection|array $M,
+			private readonly string $relation
 		) {
 		}
 
 		public function __invoke(): array {
-			$relation = lilac_config( 'relatedEntityRelation' );
-
 			$OD = [];
 			$CD = [];
 			$PM = [];
 			foreach ( $this->M as $meal ) {
-				foreach ( $meal->{$relation} as $product ) {
+				foreach ( $meal->{$this->relation} as $product ) {
 					if ( ! isset( $OD[ $product->id ] ) and ! isset( $CD[ $product->id ] ) ) {
 						$OD[ $product->id ] = 0;
 						$CD[ $product->id ] = [];
 					}
 					$OD[ $product->id ] = $OD[ $product->id ] + 1;
-					foreach ( $meal->{$relation}->except( $product->id ) as $item ) {
+					foreach ( $meal->{$this->relation}->except( $product->id ) as $item ) {
 						if ( ! isset( $CD[ $product->id ][ $item->id ] ) ) {
 							$CD[ $product->id ][ $item->id ] = 0;
 						}

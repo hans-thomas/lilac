@@ -3,5 +3,5 @@
 	namespace Hans\Lilac\Contracts;
 
 	interface Trainer {
-		public function run(): array;
+		public function run( array $config ): array;
 	}

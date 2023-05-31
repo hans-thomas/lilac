@@ -15,20 +15,20 @@
 		) {
 		}
 
-		public function run(): array {
-			$relation       = lilac_config( 'relatedEntityRelation' );
-			$wrappedByModel = lilac_config( 'wrappedBy' );
-			$M              = ( new $wrappedByModel )->query()
-			                                         ->whereHas(
-				                                         $relation,
-				                                         fn( Builder $builder ) => $builder->whereIn(
-					                                         Str::singular( $relation ) . '_id',
-					                                         $this->input_foods->pluck( 'id' )
-				                                         )
-			                                         )
-			                                         ->get();
+		public function run( array $config ): array {
+			$wrappedByModel                 = $config[ 'wrappedByModel' ];
+			$wrappedByModelRelationToEntity = $config[ 'wrappedByModelRelationToEntity' ];
+			$M                              = app( $wrappedByModel )->query()
+			                                                        ->whereHas(
+				                                                        $wrappedByModelRelationToEntity,
+				                                                        fn( Builder $builder ) => $builder->whereIn(
+					                                                        Str::singular( $wrappedByModelRelationToEntity ) . '_id',
+					                                                        $this->input_foods->pluck( 'id' )
+				                                                        )
+			                                                        )
+			                                                        ->get();
 
-			return ( new PairwiseAssociationRulesLogic( $M ) )();
+			return ( new PairwiseAssociationRulesLogic( $M, $wrappedByModelRelationToEntity ) )();
 		}
 
 	}

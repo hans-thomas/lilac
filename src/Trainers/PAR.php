@@ -6,11 +6,12 @@
 	use Hans\Lilac\Services\PairwiseAssociationRulesLogic;
 
 	class PAR implements Trainer {
-		public function run(): array {
-			$wrappedByModel = lilac_config( 'wrappedBy' );
-			$M              = ( new $wrappedByModel )->query()->get();
+		public function run( array $config ): array {
+			$wrappedByModel                 = $config[ 'wrappedByModel' ];
+			$wrappedByModelRelationToEntity = $config[ 'wrappedByModelRelationToEntity' ];
+			$M                              = ( new $wrappedByModel )->query()->get();
 
-			return ( new PairwiseAssociationRulesLogic( $M ) )();
+			return ( new PairwiseAssociationRulesLogic( $M, $wrappedByModelRelationToEntity ) )();
 		}
 
 	}

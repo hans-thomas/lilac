@@ -3,11 +3,6 @@
 	use Hans\Lilac\Trainers\EPAR;
 
 	return [
-		'wrappedBy'                => \Illuminate\Database\Eloquent\Model::class,
-		'relatedEntityRelation'    => 'foods',
-		'entity'                   => \Illuminate\Database\Eloquent\Model::class,
-		'relatedWrappedByRelation' => 'meals',
-
 		/*
 		|--------------------------------------------------------------------------
 		| Trainers
@@ -20,4 +15,20 @@
 		'trainers'                 => [
 			'default' => EPAR::class
 		],
+
+		/*
+		|--------------------------------------------------------------------------
+		| Relations
+		|--------------------------------------------------------------------------
+		|
+		| Define your relations here, these settings used for creating recommendation
+		|
+		*/
+		'relations'                => [
+			\Illuminate\Database\Eloquent\Model::class => [
+				'wrappedByModel'                 => \Illuminate\Database\Eloquent\Model::class,
+				'wrappedByModelRelationToEntity' => 'foods',
+				'entityModelRelationToWrappedBy' => 'meals',
+			]
+		]
 	];

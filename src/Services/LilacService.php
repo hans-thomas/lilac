@@ -12,9 +12,11 @@
 		protected bool $fresh = false;
 		protected Trainer $trainer;
 		protected int $limit = 0;
+		private string $relation;
 
 		public function recommends( Collection|Model $models ): Collection {
 			$models                   = $models instanceof Model ? collect( [ $models ] ) : $models;
+			$this->relation           = get_class( $models->first() );
 			$pairwiseAssociationRules = $this->train( $models );
 
 			$recommended = $this->recommend( $pairwiseAssociationRules, $models );
@@ -24,18 +26,21 @@
 			return $this->resolveModels( $recommended );
 		}
 
-		private function train( Collection $models ): array {
+		protected function train( Collection $models ): array {
+			if ( ! isset( $this->trainer ) ) {
+				$this->trainer = app( lilac_config( 'trainers.default' ), [ 'input_foods' => $models ] );
+			}
+
 			$cacheKey = $this->makeCacheKey( $models );
 
 			if ( $this->fresh ) {
 				Cache::forget( $cacheKey );
 			}
 
-			if ( ! isset( $this->trainer ) ) {
-				$this->trainer = app( lilac_config( 'trainers.default' ), [ 'input_foods' => $models ] );
-			}
-
-			return Cache::rememberForever( $cacheKey, fn() => $this->trainer->run() );
+			return Cache::rememberForever(
+				$cacheKey,
+				fn() => $this->trainer->run( lilac_relation_config( $this->relation ) )
+			);
 		}
 
 		private function recommend( array $PM, Collection $models ): array {
@@ -43,9 +48,7 @@
 		}
 
 		private function resolveModels( array $recommendedModels ): Collection {
-			$entity = lilac_config( 'entity' );
-
-			$models = ( new $entity )->query()->whereIn( 'id', array_keys( $recommendedModels ) )->get();
+			$models = app( $this->relation )->query()->whereIn( 'id', array_keys( $recommendedModels ) )->get();
 
 			return $models->sortByDesc( fn( $entity ) => $recommendedModels[ $entity->id ] );
 		}
