@@ -15,15 +15,27 @@
 		private string $relation;
 
 		public function recommends( Collection|Model $models ): Collection {
-			$models                   = $models instanceof Model ? collect( [ $models ] ) : $models;
-			$this->relation           = get_class( $models->first() );
-			$pairwiseAssociationRules = $this->train( $models );
+			$models = $models instanceof Model ? collect( [ $models ] ) : $models;
+			$this->setRelation( $models );
 
-			$recommended = $this->recommend( $pairwiseAssociationRules, $models );
+			$recommended = ( new PairwiseAssociationRulesRecommender( $this->train( $models ), $models ) )();
 			arsort( $recommended );
-			$recommended = $this->limit ? collect( $recommended )->take( $this->limit )->toArray() : $recommended;
+			$recommended = $this->limit ?
+				collect( $recommended )->take( $this->limit )->toArray() :
+				$recommended;
 
 			return $this->resolveModels( $recommended );
+		}
+
+		public function updateTrainModel( Collection|Model $models ): self {
+			$models = $models instanceof Model ? collect( [ $models ] ) : $models;
+			$this->setRelation( $models );
+
+			$freshState = $this->fresh;
+			$this->fresh()->train( $models );
+			$this->fresh = $freshState;
+
+			return $this;
 		}
 
 		protected function train( Collection $models ): array {
@@ -41,10 +53,6 @@
 				$cacheKey,
 				fn() => $this->trainer->run( lilac_relation_config( $this->relation ) )
 			);
-		}
-
-		private function recommend( array $PM, Collection $models ): array {
-			return ( new PairwiseAssociationRulesRecommender( $PM, $models ) )();
 		}
 
 		private function resolveModels( array $recommendedModels ): Collection {
@@ -97,6 +105,15 @@
 			$this->limit = $limit;
 
 			return $this;
+		}
+
+		/**
+		 * @param Model|Collection $models
+		 *
+		 * @return void
+		 */
+		protected function setRelation( Model|Collection $models ): void {
+			$this->relation = get_class( $models->first() );
 		}
 
 

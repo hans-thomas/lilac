@@ -10,11 +10,13 @@
 	use RuntimeException;
 
 	/**
-	 * @method static recommends( Collection|Model $models )
-	 * @method static fresh()
-	 * @method static cache()
-	 * @method static trainer( Trainer $trainer )
-	 * @method static limit( int $limit )
+	 * @method static Collection recommends( Collection|Model $models )
+	 * @method static LilacService updateTrainModel( Collection|Model $models )
+	 * @method static LilacService fresh()
+	 * @method static LilacService cache()
+	 * @method static LilacService trainer( Trainer $trainer )
+	 * @method static LilacService limit( int $limit )
+	 *
 	 * @see LilacService
 	 */
 	class Lilac extends Facade {

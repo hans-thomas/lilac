@@ -5,6 +5,7 @@
 	use Hans\Lilac\Facades\Lilac;
 	use Hans\Lilac\Tests\Core\Factories\CategoryFactory;
 	use Hans\Lilac\Tests\Core\Factories\PostFactory;
+	use Hans\Lilac\Tests\Core\Models\Category;
 	use Hans\Lilac\Tests\Core\Models\Post;
 	use Hans\Lilac\Tests\TestCase;
 	use Hans\Lilac\Trainers\EPAR;
@@ -88,6 +89,37 @@
 			$recommended = Lilac::limit( 10 )->recommends( $ids );
 
 			self::assertCount( 10, $recommended );
+		}
+
+		/**
+		 * @test
+		 *
+		 * @return void
+		 */
+		public function updateTrainModel(): void {
+			$ids             = Post::query()->inRandomOrder()->limit( 5 )->get();
+			$old_recommended = Lilac::trainer( new EPAR( $ids ) )->recommends( $ids );
+
+			PostFactory::new()
+			           ->count( 150 )
+			           ->create()
+			           ->each(
+				           fn( Post $post ) => $post->categories()
+				                                    ->sync(
+					                                    Category::query()
+					                                            ->select( 'id' )
+					                                            ->inRandomOrder()
+					                                            ->limit( 5 )
+					                                            ->get()
+				                                    )
+			           );
+
+			Lilac::updateTrainModel($ids);
+
+			$new_recommended = Lilac::trainer( new EPAR( $ids ) )->recommends( $ids );
+
+			self::assertNotEquals( $old_recommended, $new_recommended );
+
 		}
 
 	}
