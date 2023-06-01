@@ -114,7 +114,7 @@
 				                                    )
 			           );
 
-			Lilac::updateTrainModel($ids);
+			Lilac::updateTrainModel( $ids );
 
 			$new_recommended = Lilac::trainer( new EPAR( $ids ) )->recommends( $ids );
 
