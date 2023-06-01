@@ -1,6 +1,6 @@
 {
     "name": "hans-thomas/lilac",
-    "description": "it is a recommender system based-on pairwise association rules",
+    "description": "it is a recommender system based-on pairwise association rules.",
     "license": "MIT",
     "authors": [
         {
@@ -9,8 +9,7 @@
         }
     ],
     "require": {
-        "php": "^8.1",
-        "chelout/laravel-relationship-events": "^2.0"
+        "php": "^8.1"
     },
     "require-dev": {
         "orchestra/testbench": "^8.0",
