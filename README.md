@@ -2,7 +2,8 @@
 
 It's a recommender system using pairwise association rules (PAR) based-on
 this [paper](https://www.sciencedirect.com/science/article/pii/S095741741830441X?via%3Dihub).
-There is an enhanced PAR (EPAR) algorithm which reduces the producing recommendation time.
+There is an enhanced PAR (EPAR) algorithm which reduces the producing recommendation time. this recommender system is
+able to create train model and generate recommends for one or more than one model.
 
 ## Installation
 
@@ -18,11 +19,11 @@ Then
 php artisan vendor:publish --tag lilac-config
 ```
 
-### Usage
+## Usage
 
 Let's assume there are two `Post` and `Category` models which they have a `many-to-many` relationship.
 
-#### Config
+### Config
 
 In config file, we should define our relationship first. there is a template definition of a relation that you can edit
 that.
@@ -43,9 +44,9 @@ return [
 ];
 ```
 
-#### Available methods
+### Available methods
 
-##### recommends
+#### recommends
 
 To generate some recommendation, use `recommends` method.
 
@@ -57,7 +58,7 @@ Lilac::recommends( $ids );
 
 It will return a collection of models that sorted by the score they've got.
 
-##### updateTrainModel
+#### updateTrainModel
 
 `Lilac` provides a caching system to store the created data and prevents to create duplicate train model. when you
 create some recommendation for a model(s), the related train model will be cached for future use. meanwhile, you make
@@ -72,7 +73,7 @@ Lilac::updateTrainModel( $ids );
 
 This will update and cache the related train model.
 
-##### fresh
+#### fresh
 
 Sometimes you need to ignore cached train models and make recommendation using the latest data from database. for this,
 you can use `fresh` method before `recommends` method.
@@ -83,7 +84,7 @@ use Hans\Lilac\Facades\Lilac;
 Lilac::fresh()->recommends( $ids );
 ```
 
-##### cache
+#### cache
 
 You may want to create recommendation for two models in one scope. first one using fresh data and second one using
 cached data. in this situation, you should use `cache` in you second call.
@@ -96,7 +97,7 @@ Lilac::fresh()->recommends( $ids );
 Lilac::cache()->recommends( $other_ids );
 ```
 
-##### trainer
+#### trainer
 
 To set your trainer, you can pass the instance to the `trainer` method.
 
@@ -112,7 +113,7 @@ Lilac::trainer( new PAR )->recommends( $ids );
 
 > You can set your default trainer in config file.
 
-##### limit
+#### limit
 
 You can set a limit to returned recommendation count.
 
@@ -121,3 +122,23 @@ use Hans\Lilac\Facades\Lilac;
 
 Lilac::limit( 10 )->recommends( $ids );
 ```
+
+### Jobs
+
+To automatically keep train models up-to-date, there are two jobs than you can use. You can fire these jobs whenever you
+update the relationship or just setting hooks for you relationships using
+this [package](https://github.com/chelout/laravel-relationship-events).
+
+#### UpdateEntityTrainModel
+
+To update the train model of a single model, you can fire `UpdateEntityTrainModel` and pass the related model.
+
+#### UpdateWrapperTrainModel
+
+To update the train model of a bunch of related models, you should pass them as a collection
+to `UpdateWrapperTrainModel` job.
+
+
+## Support
+
+- [Repost bugs](https://github.com/hans-thomas/lilac/issues)
