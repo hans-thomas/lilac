@@ -1,7 +1,8 @@
 <?php
 
-	namespace Hans\Lilac\Contracts;
+namespace Hans\Lilac\Contracts;
 
-	interface Trainer {
-		public function run( array $config ): array;
-	}
+    interface Trainer
+    {
+        public function run(array $config): array;
+    }
