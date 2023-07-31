@@ -2,7 +2,7 @@
 
 namespace Hans\Lilac\Contracts;
 
-    interface Algorithm
-    {
-        public function __invoke(): array;
-    }
+interface Algorithm
+{
+    public function __invoke(): array;
+}
